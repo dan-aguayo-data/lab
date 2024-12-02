@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus
+  namespace: argocd
+spec:
+  project: monitoring
+  source:
+    repoURL: https://github.com/<your-username>/<your-repo>.git
+    targetRevision: main
+    path: prometheus
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: grafana.service.type
+          value: LoadBalancer
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
