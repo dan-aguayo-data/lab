@@ -1,0 +1,65 @@
+redis:
+  enabled: true
+  master:
+    persistence:
+      enabled: true
+      storageClass: gp2
+      accessModes:
+        - ReadWriteOnce
+  
+postgresql:
+  enabled: true
+  primary:
+    persistence:
+      enabled: true
+      storageClass: gp2
+      accessModes:
+        - ReadWriteOnce
+      size: 10Gi
+
+
+bootstrapScript: |
+  #!/bin/bash
+  pip install --upgrade pip
+  pip install Pillow
+  pip install sqlalchemy-drill psycopg2-binary
+  pip install mysqlclient
+  pip install sqlalchemy
+  pip install snowflake-sqlalchemy
+  pip install clickhouse-connect
+  pip install "apache-superset[cors]"
+  pip install "apache-superset[databricks]"
+  pip install authlib
+  pip install sqlalchemy-drill psycopg2-binary
+  apt-get update && apt-get install -y pkg-config libmysqlclient-dev
+  if [ ! -f ~/bootstrap ]; then echo "Running Superset with uid {{ .Values.runAsUser }}" > ~/bootstrap; fi
+
+init:
+  loadExamples: true
+
+FEATURE_FLAGS:
+  EMBEDDED_SUPERSET: true
+  TAGGING_SYSTEM: true
+
+CORS_OPTIONS: 
+  supports_credentials: true
+  allow_headers: "*"
+  expose_headers: "*"
+  resources: "*"
+  origins: 
+    - http://localhost:3000
+
+SESSION_COOKIE_SECURE: false
+WTF_CSRF_ENABLED: false
+ENABLE_CORS: true
+TALISMAN_ENABLED: false
+HTTP_HEADERS: 
+  X-Frame-Options: ALLOWALL
+
+
+extraSecretEnv:
+  - name: SUPERSET_SECRET_KEY
+    valueFrom:
+      secretKeyRef:
+        name: "superset-secret"
+        key: SUPERSET_SECRET_KEY

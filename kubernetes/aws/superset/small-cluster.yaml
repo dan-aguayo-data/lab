@@ -1,0 +1,28 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: EKS-data-team-sandbox-cluster
+  region: ap-southeast-2
+
+nodeGroups:
+  - name: scale-southeast2c
+    instanceType: t3.medium
+    desiredCapacity: 1
+    maxSize: 5
+    volumeSize: 50
+    availabilityZones: ["ap-southeast-2c"]
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+    labels:
+      nodegroup-type: stateful-southeast2c
+      instance-type: onDemand
+      team: data-team
+    tags:
+      Environment: Sandbox
+      Team: data-Team
+      Project: eks-superset
+    ssh:
+      publicKeyName: data-team-cli-sandbox
+

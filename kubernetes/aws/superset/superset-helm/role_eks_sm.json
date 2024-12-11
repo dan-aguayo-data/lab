@@ -1,0 +1,17 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "eks.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+                "StringEquals": {
+                    "https://oidc.eks.ap-southeast-2.amazonaws.com/id/2595A3E28A1C63EEE7F511AF53767465": "system:serviceaccount:superset:iameksserviceaccount"
+                }
+            }
+        }
+    ]
+}

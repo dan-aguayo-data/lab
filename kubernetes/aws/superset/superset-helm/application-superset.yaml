@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: superset
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: https://apache.github.io/superset
+      chart: superset
+      targetRevision: 0.13.4
+      helm:
+        valueFiles:
+          - $values/superset/values.yaml
+    - repoURL: 'https://github.com/coexservices/dadataplatforms-eks-superset-test.git'
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: superset
+  syncPolicy:
+    syncOptions:
+      - ServerSideApply=true
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true

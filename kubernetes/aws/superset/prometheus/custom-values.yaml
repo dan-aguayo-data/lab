@@ -1,4 +1,0 @@
-grafana:
-  admin:
-    existingSecret: prometheus-admin-secret
-    adminPasswordKey: adminPassword
